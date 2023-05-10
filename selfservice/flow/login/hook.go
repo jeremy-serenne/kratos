@@ -142,8 +142,10 @@ func (e *HookExecutor) PostLoginHook(w http.ResponseWriter, r *http.Request, g n
 
 	// Verify if the current RequestURL is part of the self service public URLs.
 	// If so, we can safely redirect to it.
-	if _, err := x.SecureRedirectTo(r, requestURL, x.SecureRedirectAllowSelfServiceURLs(e.d.Config().SelfPublicURL(r.Context()))); err == nil {
-		redirectOpts = append(redirectOpts, x.SecureRedirectOverrideDefaultReturnTo(requestURL))
+	if requestURL.Path != "" {
+		if _, err := x.SecureRedirectTo(r, requestURL, x.SecureRedirectAllowSelfServiceURLs(e.d.Config().SelfPublicURL(r.Context()))); err == nil {
+			redirectOpts = append(redirectOpts, x.SecureRedirectOverrideDefaultReturnTo(requestURL))
+		}
 	}
 
 	// Verify the redirect URL before we do any other processing.
